@@ -1,0 +1,43 @@
+class Solution {
+    int directions[4][2] = {{1, 0}, {-1, 0}, 
+                            {0, 1}, {0, -1}};
+    set<pair<int,int>> visited;
+public:
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        int ROWS = grid.size(), COLS = grid[0].size();
+        int area = 0;
+
+        for (int r = 0; r < ROWS; r++) {
+            for (int c = 0; c < COLS; c++) {
+                if (grid[r][c] == 1 && !visited.count({r,c})) {
+                    area = max(area, bfs(grid, r, c));
+                }
+            }
+        }
+
+        return area;
+    }
+
+    int bfs(vector<vector<int>>& grid, int r, int c) {
+        queue<pair<int, int>> q;
+        visited.insert({r, c});
+        q.push({r, c});
+        int res = 1;
+
+        while (!q.empty()) {
+            auto node = q.front();q.pop();
+            int row = node.first, col = node.second;
+            for (int i = 0; i < 4; i++) {
+                int nr = row + directions[i][0];
+                int nc = col + directions[i][1];
+                if (nr >= 0 && nc >= 0 && nr < grid.size() && 
+                    nc < grid[0].size() && grid[nr][nc] == 1 && !visited.count({nr, nc})) {
+                    q.push({nr, nc});
+                    visited.insert({nr, nc});
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+};
